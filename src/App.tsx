@@ -708,7 +708,12 @@ export default function App() {
                 value={query}
                 onChange={(event) => setQuery(event.target.value)}
               />
-              <select value={city} onChange={(event) => setCity(event.target.value)}>
+              <select
+                className="city-filter"
+                aria-label="City"
+                value={city}
+                onChange={(event) => setCity(event.target.value)}
+              >
                 <option value="all">All cities</option>
                 {cities.map((name) => {
                   const unlock = cityUnlockLevel(name)

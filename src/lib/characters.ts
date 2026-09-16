@@ -1,12 +1,16 @@
 import type { Character } from './types.ts'
 
+function icon(file: string): string {
+  return `${import.meta.env.BASE_URL}characters/${file}`
+}
+
 export const CHARACTERS: Character[] = [
   {
     id: 'tycoon',
     label: 'Tycoon',
     shortLabel: 'Tycoon',
     hint: '30 turns / day',
-    icon: '/characters/tycoon.png',
+    icon: icon('tycoon.png'),
     turnsPerDay: 30,
     minutesPerTurn: 48,
   },
@@ -15,7 +19,7 @@ export const CHARACTERS: Character[] = [
     label: 'All others',
     shortLabel: 'All others',
     hint: '24 turns / day',
-    icon: '/characters/all-others.png',
+    icon: icon('all-others.png'),
     turnsPerDay: 24,
     minutesPerTurn: 60,
   },
@@ -24,7 +28,7 @@ export const CHARACTERS: Character[] = [
     label: 'Insomniac',
     shortLabel: 'Insomniac',
     hint: '34.3 turns / day',
-    icon: '/characters/insomniac.png',
+    icon: icon('insomniac.png'),
     turnsPerDay: 34.28571429,
     minutesPerTurn: 42,
   },
@@ -33,7 +37,7 @@ export const CHARACTERS: Character[] = [
     label: 'Kingpin / Enforcer',
     shortLabel: 'Kingpin',
     hint: '36 turns / day',
-    icon: '/characters/kingpin.png',
+    icon: icon('kingpin.png'),
     turnsPerDay: 36,
     minutesPerTurn: 40,
   },
@@ -42,7 +46,7 @@ export const CHARACTERS: Character[] = [
     label: 'Double Agent / Knuckle Duster',
     shortLabel: 'Double Agent',
     hint: '37.9 turns / day',
-    icon: '/characters/agent.png',
+    icon: icon('agent.png'),
     turnsPerDay: 37.89473684,
     minutesPerTurn: 38,
   },
@@ -51,7 +55,7 @@ export const CHARACTERS: Character[] = [
     label: 'Slicer / Sniper / Mastermind / Infiltrator',
     shortLabel: 'Elite',
     hint: '40 turns / day',
-    icon: '/characters/elite.png',
+    icon: icon('elite.png'),
     turnsPerDay: 40,
     minutesPerTurn: 36,
   },
