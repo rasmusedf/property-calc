@@ -7,7 +7,7 @@ export const CITY_UNLOCK_LEVELS: Record<string, number> = {
   London: 55,
   'Las Vegas': 90,
   Moscow: 120,
-  Dubai: 170,
+  Dubai: 140,
   Shanghai: 190,
   Tokyo: 270,
   Tijuana: 360,
