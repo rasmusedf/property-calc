@@ -1,6 +1,6 @@
 import { LCN_PROPERTIES } from './lcn.ts'
 
-/** In-game city unlock. The first building opens here; later buildings add the city step. */
+/** In-game city unlock. The first building opens here; the rest fill the gap before the next city. */
 export const CITY_UNLOCK_LEVELS: Record<string, number> = {
   'New York': 1,
   Chicago: 15,
@@ -75,26 +75,34 @@ export function unlockedCityCount(level: number): number {
   return CITY_ORDER.filter((city) => CITY_UNLOCK_LEVELS[city] <= level).length
 }
 
-/** Extra levels between buildings in the same city. Default is +10. */
-const CITY_PROPERTY_STEP: Record<string, number> = {
-  Palermo: 50,
-}
+/** Caracas opens after Mumbai. It has no properties in the catalog yet. */
+const LEVEL_AFTER_LAST_CITY = 18170
 
 function propertyKey(property: { name: string; city: string }): string {
   return `${property.city}:${property.name}`
 }
 
-function propertyStep(city: string): number {
-  return CITY_PROPERTY_STEP[city] ?? 10
+/** Spread a city's buildings across the levels before the next city opens. */
+function propertyLevel(start: number, next: number, count: number, index: number): number {
+  const gap = next - start
+  if (count <= 1 || gap <= 0) return start
+  if (gap % count === 0) return start + index * (gap / count)
+  return Math.min(start + Math.ceil((index * gap) / count), next - 1)
 }
 
 const PROPERTY_UNLOCK_LEVELS = new Map<string, number>()
 
-for (const city of CITY_ORDER) {
+for (let i = 0; i < CITY_ORDER.length; i++) {
+  const city = CITY_ORDER[i]
   const start = CITY_UNLOCK_LEVELS[city]
-  const step = propertyStep(city)
-  LCN_PROPERTIES.filter((property) => property.city === city).forEach((property, index) => {
-    PROPERTY_UNLOCK_LEVELS.set(propertyKey(property), start + index * step)
+  const next =
+    i + 1 < CITY_ORDER.length ? CITY_UNLOCK_LEVELS[CITY_ORDER[i + 1]] : LEVEL_AFTER_LAST_CITY
+  const properties = LCN_PROPERTIES.filter((property) => property.city === city)
+  properties.forEach((property, index) => {
+    PROPERTY_UNLOCK_LEVELS.set(
+      propertyKey(property),
+      propertyLevel(start, next, properties.length, index),
+    )
   })
 }
 
