@@ -1,4 +1,6 @@
-/** City unlock levels for Mob Wars: La Cosa Nostra. */
+import { LCN_PROPERTIES } from './lcn.ts'
+
+/** First property / travel unlock for each city. Later buildings add the city step. */
 export const CITY_UNLOCK_LEVELS: Record<string, number> = {
   'New York': 1,
   Chicago: 15,
@@ -6,7 +8,7 @@ export const CITY_UNLOCK_LEVELS: Record<string, number> = {
   'Las Vegas': 90,
   Moscow: 120,
   Dubai: 170,
-  Shanghai: 210,
+  Shanghai: 190,
   Tokyo: 270,
   Tijuana: 360,
   Medellin: 420,
@@ -14,7 +16,7 @@ export const CITY_UNLOCK_LEVELS: Record<string, number> = {
   Bangkok: 850,
   'Rio de Janeiro': 1000,
   'San Francisco': 1240,
-  Palermo: 1480,
+  Palermo: 1300,
   Miami: 1600,
   Sydney: 1720,
   Havana: 2120,
@@ -73,17 +75,31 @@ export function unlockedCityCount(level: number): number {
   return CITY_ORDER.filter((city) => CITY_UNLOCK_LEVELS[city] <= level).length
 }
 
-/** Buildings that open after their city. Confirmed in-game. */
-const PROPERTY_UNLOCK_OVERRIDES: Record<string, number> = {
-  'Dubai:Office Complex': 190,
+/** Extra levels between buildings in the same city. Default is +10. */
+const CITY_PROPERTY_STEP: Record<string, number> = {
+  Palermo: 50,
 }
 
 function propertyKey(property: { name: string; city: string }): string {
   return `${property.city}:${property.name}`
 }
 
+function propertyStep(city: string): number {
+  return CITY_PROPERTY_STEP[city] ?? 10
+}
+
+const PROPERTY_UNLOCK_LEVELS = new Map<string, number>()
+
+for (const city of CITY_ORDER) {
+  const start = CITY_UNLOCK_LEVELS[city]
+  const step = propertyStep(city)
+  LCN_PROPERTIES.filter((property) => property.city === city).forEach((property, index) => {
+    PROPERTY_UNLOCK_LEVELS.set(propertyKey(property), start + index * step)
+  })
+}
+
 export function propertyUnlockLevel(property: { name: string; city: string }): number {
-  return PROPERTY_UNLOCK_OVERRIDES[propertyKey(property)] ?? cityUnlockLevel(property.city)
+  return PROPERTY_UNLOCK_LEVELS.get(propertyKey(property)) ?? cityUnlockLevel(property.city)
 }
 
 export function isPropertyUnlocked(
